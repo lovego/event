@@ -2,10 +2,10 @@ package event
 
 import (
 	"encoding/json"
+	"log"
 	"sync"
 
 	"github.com/garyburd/redigo/redis"
-	"retail-tek.com/wumart-pkgs/config"
 )
 
 var events = struct {
@@ -14,8 +14,6 @@ var events = struct {
 }{m: make(map[string]func([]byte))}
 
 var subConn redis.PubSubConn
-
-var log = config.Logger()
 
 func On(channel string, handler func([]byte)) {
 	if subConn.Conn == nil {
@@ -43,7 +41,7 @@ func startListen() {
 	go func() {
 		for i := 0; i < 10000; i++ {
 			func() {
-				defer log.Recover()
+				defer recover()
 				listen(i)
 			}()
 		}
@@ -70,7 +68,7 @@ Loop:
 		switch n := subConn.Receive().(type) {
 		case redis.Message:
 			func() {
-				defer log.Recover()
+				defer recover()
 				events.RLock()
 				handler := events.m[n.Channel]
 				events.RUnlock()

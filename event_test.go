@@ -13,7 +13,7 @@ func TestEvent(t *testing.T) {
 		var value int
 		Parse(raw, &value)
 		if value != expect {
-			t.Errorf(`expect: %s; got: %s`, expect, value)
+			t.Errorf(`expect: %v; got: %v`, expect, value)
 		}
 		ch <- struct{}{}
 	})
